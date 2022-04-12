@@ -1,0 +1,216 @@
+Fulcrum - ERD
+
+Invoice
+	DataGUID
+	Invoice ID
+	Invoice Status
+	Invoice Date
+	Company
+	Customer
+	Attachment
+	Locations
+	Service Dates
+	AFE
+	Cost Center
+	Invoice Line
+		DataGUID
+		Item
+		Sub Item
+		Quantity
+		Unit
+		Description
+		Applicable Taxes
+		Field Tickets
+		AFEs
+		Cost Centers
+		Accounting Codes
+		
+Field Ticket
+	DataGUID
+	Internal Field Ticket ID
+	Client Field Ticket ID
+	Status
+	Job ID
+	Start Date
+	End Date
+	Customer
+	Customer Contacts
+	Company
+	Company Contacts
+	Emergency Contact
+	Locations
+	AFEs
+	Cost Centers
+	Accounting Codes
+	Work Order
+	Custom Fields
+	Comment
+	Field Ticket Line Set
+		DataGUID
+		Name
+		Field Ticket Line
+			DataGUID
+			Status
+			Employee
+			Employee Role
+			Item
+			Sub Item
+			Quantity
+			Rate
+			Unit
+			Start Date
+			Start Time
+			End Date
+			End Time
+			Comment
+			Discount Percent
+			Discount Amount
+	Attachments
+	
+Job
+	DataGUID
+	Client Job ID
+	Internal Job ID
+	Job Name
+	Job Type
+	Status
+	Customer
+	Customer Contacts
+	Companies
+	Company Contacts
+	Start Date
+	End Date
+	Rate List Sets
+	Attachments
+	
+Item
+	DataGUID
+	Name
+	Status
+	Status Date
+	Categories
+	Serial Number
+	Model Number
+	Date Acquired
+	Description
+	Reserved Job
+	Inventory
+	Custom Fields
+	Applicable Taxes
+	
+Related Items
+	DataGUID
+	Parent Item GUID
+	Child Item GUID
+
+Item Status History
+	History DataGUID
+	Item DataGUID
+	Status Date
+	Status
+	Comment
+	User DataGUID
+	
+User
+	DataGUID
+	User Name
+	Encrypted Password
+	Last Login
+	Employee DataGUID
+	
+Employee
+	DataGUID
+	Contact
+	Roles
+	
+Employee Role
+	DataGUID
+	Name
+	Category
+	Status
+	Default Rate
+	Default Unit
+	
+Item Rate List
+	DataGUID
+	Name
+	Status
+	Item Rates
+		Price
+		Unit
+	
+Employee Rate List
+	DataGUID
+	Name
+	Status
+	Employee Rates
+		Employee Role DataGUID
+		Rate
+		Unit
+		
+Security Role
+	DataG
+	Name
+	Feature Access Flags
+	Status
+	
+Customer
+	DataGUID
+	ID
+	Full Name
+	Locations
+	Affiliations
+	Website
+	Status
+	
+Contact
+	DataGUID
+	Full Name
+	Contact Information Sets (phone, email, website, social media account)
+	
+Contact Information Set
+	DataGUID
+	Contact DataGUID
+	Name
+	Contact Information
+	
+Location
+	DataGUID
+	Address
+	City
+	Region
+	Country
+	Postal Code
+	Contact Information Sets
+	Contacts
+	
+Field Ticket Status
+	DataGUID
+	Name
+	Category
+	Status
+	
+Invoice Status
+	DataGUID
+	Name
+	Category
+	Status
+
+Job Status
+	DataGUID
+	Name
+	Description
+	Status
+	
+Job Status Access
+	DataGUID
+	Job Status
+	Security Role
+	Can View
+	Can Edit
+	Can Delete
+	
+Item Category
+	DataGUID
+	Durable
+	Status

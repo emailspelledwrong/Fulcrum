@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- https://github.com/jcubic/jquery.terminal/wiki/Formatting-and-Syntax-Highlighting -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://unpkg.com/jquery.terminal/js/jquery.terminal.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/jquery.terminal/css/jquery.terminal.min.css"/>
+<style>
+	#invoices {border: 1px solid #333333;}
+	#invoices td {padding-left: 5px; padding-right: 5px; text-align: left; border: 1px solid #333333;}
+	#invoices th {padding-left: 5px; padding-right: 5px; text-align: left; border: 1px solid #333333; background: #222222;}
+	#invoices td.currency {padding-left: 5px; padding-right: 5px; text-align: right; border: 1px solid #333333;}
+	.invalid-value {color: #BB1111;}
+</style>
+</head>
+<body>
+<script src="inv_functions.js"></script>
+<script>
+
+	
+$('body').terminal({
+	cat: function(width, height) {
+        const img = $('<img src="https://placekitten.com/' +
+                      width + '/' + height + '">');
+        this.echo(img);
+    },
+    title: function() {
+        return fetch('https://terminal.jcubic.pl')
+            .then(r => r.text())
+            .then(html => html.match(/<title>([^>]+)<\/title>/)[1]);
+    },
+	inv: function(...rawArgs) {
+		function isNumericx(str) {
+			if (typeof str != "string") return false; // we only process strings!  
+			return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+				   !isNaN(parseFloat(str)); // ...and ensure strings of whitespace fail
+		}
+		function escapeHtml(unsafe)
+		{
+			unsafe = unsafe.valueOf();
+			return unsafe
+				 .replace(/&/g, "&amp;")
+				 .replace(/</g, "&lt;")
+				 .replace(/>/g, "&gt;")
+				 .replace(/"/g, "&quot;")
+				 .replace(/'/g, "&#039;");
+		}
+		function process_vscrap(val, i) {
+			const vscrap_args = ['void','submitted','created','rejected','approved','paid'];
+			if (vscrap_args.indexOf(val) != -1) {
+				vscrap[vscrap_args.indexOf(val)] = true;
+			}
+		}
+		function process_queries(val, i) {
+			if (val.startsWith('@')) {
+				//load the named query
+				_errors.push($('<span>'+_error_dictionary[4]+'</span>'+_common_text[1]+escapeHtml(val)+'</span>'));
+			}
+		}
+		function process_ranges(val, i) {
+			if ((val.startsWith('>') || val.startsWith('<')) && val.length == 1) {
+				_errors.push($('<span>'+_error_dictionary[2]+'</span>'+_common_text[1]+escapeHtml(val)+'</span>'));
+				return;
+			}
+			
+			if (val.startsWith('<')) {
+				if (!isNaN(ranges[0])) {
+					_errors.push($('<span>'+_error_dictionary[3]+'</span>'+_common_text[1]+escapeHtml(val)+'</span>')); 
+					return;
+				}
+				var lessThanValue = val.slice(1,val.length);
+				if (isNumeric(lessThanValue) == true) { 
+					ranges[0] = lessThanValue;
+				} else {
+					_errors.push($('<span>'+_error_dictionary[0]+'</span>'+_common_text[1]+escapeHtml(val)+'</span>'));
+				}
+			}
+
+			if (val.startsWith('>')) {
+				if (!isNaN(ranges[1])) {
+					_errors.push($('<span>'+_error_dictionary[3]+'</span>'+_common_text[1]+escapeHtml(val)+'</span>'));
+					return;
+				}
+				var greaterThanValue = val.slice(1,val.length);
+				if (isNumeric(greaterThanValue) == true) { 
+					ranges[1] = greaterThanValue;
+				} else {
+					_errors.push($('<span>'+_error_dictionary[1]+'</span>'+_common_text[1]+escapeHtml(val)+'</span>'));
+				}
+			}
+		}
+		
+		const invoice_table_page = $('<table id="invoices">'+
+			'<tr><th>Invoice#</th><th>Customer</th><th>Status</th><th>Updated</th><th>Submitted</th><th>Paid</th><th class="currency">Value</th></tr>'+
+			'<tr><td>4549816</td><td>Tesla</td><td>created</td><td>2022-03-08 02:23:14PM</td><td></td><td></td><td class="currency">$14,779.81</td></tr>'+
+		    '<tr><td>3178349</td><td>Amazon</td><td>submitted</td><td>2022-02-21 11:05:17AM</td><td>2022-03-02</td><td></td><td class="currency">$12,349,228.99</td></tr>'+
+		    '<tr><td>4329817</td><td>Alphabet</td><td>paid</td><td>2022-02-14 08:21:54AM</td><td>2022-02-15</td><td>2022-03-29</td><td class="currency">$293,766.12</td></tr>'+
+		    '<tr><td>0039141</td><td>Oracle</td><td>rejected</td><td>2022-03-08 04:29:13PM</td><td>2022-03-11</td><td></td><td class="currency">$4,723.05</td></tr>'+
+			'</table>'+
+		    '\n<span>Page 1 of 999</span>');
+			
+		const _common_text = [
+			'Do not use commas, currency/percent signs, or spaces.', //0
+			'<br><span class="invalid-value">' //1
+		]
+		
+		const _error_dictionary = [
+			'Error[000]: Specified less-than range is not valid. Use &lt;+numbers only (eg. &lt;123.67).',
+			'Error[001]: Specified greater-than range is not valid. Use &gt;+numbers only (eg. &gt;123.67).',
+			'Error[002]: &lt; or &gt; must be followed by a number.',
+			'Error[003]: &lt; or &gt; range may each only be used once in a command.',
+			'Error[004]: Query not found.'
+		]
+		
+		if (typeof rawArgs[0] === "undefined") {
+			//no arguments supplied. do the default action.
+			//show latest invoices by update date/time
+			this.echo(invoice_table_page);
+		} 
+		else {
+			//at least one argument supplied
+			//change all args to lowercase
+			const lowerArgs = rawArgs.map(element => {
+				return element.toLowerCase();
+			});
+			//argument flags
+			var vscrap = [false,false,false,false,false,false]; //void,submitted,created,rejected,approved,paid
+			var ranges = [NaN,NaN]; //[less-than value, greater-than value]
+			var _errors = []; //array of error messages
+			if (lowerArgs[0] == 'help') {
+				this.echo('This is the help for the INV command.');
+				return;
+			}
+			//iterate through the arguments, checking for queries
+			lowerArgs.forEach(process_queries);
+			//iterate through the arguments, checking for statuses
+			lowerArgs.forEach(process_vscrap);
+			//iterate through the arguments, checking for ranges
+			lowerArgs.forEach(process_ranges);
+			//...check for other args here...
+			if (_errors.length == 0) {
+				//...execute inv command with arguments
+				this.echo(invoice_table_page);
+			}
+			//show all command errors
+			for (err = 0; err < _errors.length; err++) {
+				this.echo(_errors[err]);
+			}
+			_errors.length = 0; //clear errors
+		}
+	}
+}, 
+{checkArity:false, greetings:'FULCRUM Field-Ticketing System\n'}
+	//checkArity:false 
+		//This directs JQuery Terminal to allow a different number of arguments than what the handler function expects.
+		//The purpose of this is to enable function overloading, enabling commands to be used naked or with multiple parameters.
+	//greetings:<text>
+		//This is the greeting that shows when JQuery Terminal starts up.
+);
+</script>
+</body>
+</html>
