@@ -1,0 +1,136 @@
+Fulcrum - Commands
+
+----------------------------------------------------------------------
+inv - list of invoices, by most recently updated, in pages of 10
+	
+inv modifiers (can be used together)
+	{status} - list of invoices of the specified status
+	{customer ID} - list of invoices of the specified customer
+	{>#######} -  list of invoices above a specified amount
+	{<#######} -  list of invoices below a specified amount
+	{+###} - list of invoices at least ### days old
+	{-###} - list of invoices not more than ### days old
+	
+	eg. inv active tesla >1000 <500000 - list of active invoices for tesla, between $1,000 and $500,000
+	default sort: by most recently updated, in pages of 10
+	
+inv {invoice ID} - display details of the invoice with the specified ID
+inv {*partial invoice ID*} - displays list of invoices with an ID that partially matches the specified value
+
+inv template - displays a file selection screen that accepts an MS-Word file. The selected file will replace the existing invoice template.
+inv template {path to MS-Word file} - replaces the existing invoice template with the specified MS-Word document
+inv template get - downloads the existing MS-Word document used as the invoice template
+
+inv add
+
+inv delete {invoice ID} - deletes an invoice.
+	*safety control: user will be given a random phrase to type, to confirm deletion. Only entry of the exact phrase results in deletion.
+
+inv help - displays the above documentation
+----------------------------------------------------------------------
+ft - list of field tickets, by most recently updated, in pages of 10
+
+ft modifiers (can be used together)
+	{status} - list of field tickets of the specified status
+	{customer ID} - list of field tickets for the specified customer
+	{employee ID} - list of field tickets containing the specified employee
+	{YYYYMMDD} - list of field tickets with a start date matching the specified date
+		*Year is optional. If omitted, the current year will be assumed.
+	{YYYYMMDD-YYYYMMDD} - list of field tickets with a start date within the specified date range
+		*Year is optional. If omitted, the current/prior/next year will be assumed, relative to today's date.
+		eg. today's date is 20220331; supplied dates: 0201-0815; interpreted range: Feb 1, 2022 thru Aug 15, 2022
+		eg. today's date is 20220331; supplied dates: 1105-0815; interpreted range: Nov 5, 2021 thru Aug 15, 2022
+		eg. today's date is 20220331; supplied dates: 0901-0201; interpreted range: Sep 5, 2022 thru Feb 1, 2023
+		
+ft {field ticket ID} - details of the field ticket with the matching ID
+ft {*partial field ticket ID*} - list of field tickets with an ID that partially matches the specified value
+
+ft template - displays a file selection screen that accepts an MS-Word file. The selected file will replace the existing field ticket template.
+ft template {path to MS-Word file} - replaces the existing field ticket template with the specified MS-Word document
+ft template get - downloads the existing MS-Word document used as the field ticket template
+
+ft help - displays the above documentation
+----------------------------------------------------------------------
+job - list of jobs, by most recently updated, in pages of 10
+job modifiers (can be used together)
+	{status} - list of jobs of the specified status
+	{customer ID} - list of jobs for the specified customer
+	{employee ID} - list of jobs...
+		- with associated field tickets containing the specified employee
+		- where the specified employee is an owner
+	{YYYYMMDD} - list of jobs with a start date matching the specified date
+		*Year is optional. If omitted, the current year will be assumed.
+	{YYYYMMDD-YYYYMMDD} - list of jobs with a start date within the specified date range
+		*Year is optional. If omitted, the current/prior/next year will be assumed, relative to today's date.
+		eg. today's date is 20220331; supplied dates: 0201-0815; interpreted range: Feb 1, 2022 thru Aug 15, 2022
+		eg. today's date is 20220331; supplied dates: 1105-0815; interpreted range: Nov 5, 2021 thru Aug 15, 2022
+		eg. today's date is 20220331; supplied dates: 0901-0201; interpreted range: Sep 5, 2022 thru Feb 1, 2023
+		
+job {job ID} - details of the job with the matching ID
+job {job ID} lock {reason} - prohibit changes to the job by other users. Other users will be notified of the lock, and shown the {reason}, if they attempt to make changes to the job or it's field tickets.
+
+job {*partial job ID*} - list of jobs with an ID that partially matches the specified value
+
+job template - displays a file selection screen that accepts an MS-Word file. The selected file will replace the existing job template.
+job template {path to MS-Word file} - replaces the existing job template with the specified MS-Word document
+job template get - downloads the existing MS-Word document used as the job template
+
+job help - displays the above documentation
+----------------------------------------------------------------------
+
+
+Universal Commands
+------------------
+n - show the next page of the current list
+p - show the previous page of the current list
+page ### - go to the specified page number of the current list
+again - repeat the last command
+clr - clear the screen
+
+Configuration Commands
+----------------------
+config timezone <local timezone adjustment from GMT>
+	eg. config timezone -7 = MST (Edmonton, Calgary, Salt Lake City, Denver, Phoenix)
+config time <12|24>
+	eg. config time 12 - show 3pm as 03:00:00PM
+		config time 24 - show 3pm as 15:00:00
+
+Queries
+---------------
+inv|ft|job {modifiers} =?{query ID} - saves the preceding modifiers as a query
+	eg. inv paid >5000 =?bigmoney
+inv|ft|job ?{query ID} - runs the specified query
+	eg. ft ?johnd
+inv|ft|job ??{query ID} - lists the set of modifiers in the query with the specified ID 
+	job ??recentjobs
+inv|ft|job -?{query ID} - deletes the specified query
+	inv -?smallrejected
+
+System Rules
+------------
+The system is case-insensitive:
+	eg. active = Active = ACTIVE = aCtIvE
+	
+These key items may not ever match:
+	Invoice Status
+	Invoice ID
+	Customer ID
+	Query ID
+	Job ID
+	"help"
+	"n"
+	"p"
+	"page"
+	"again"
+	"clr"
+
+These key items may not contain a space, *, ?, or @ character:
+	Invoice Status
+	Invoice ID
+	Customer ID
+	Query ID
+	Field Ticket ID
+	Employee ID
+	Job ID
+	
+Commands may not include a " or ' character.
