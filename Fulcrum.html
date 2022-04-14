@@ -4,6 +4,7 @@
 <!-- https://github.com/jcubic/jquery.terminal/wiki/Formatting-and-Syntax-Highlighting -->
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://unpkg.com/jquery.terminal/js/jquery.terminal.min.js"></script>
+<script type="text/javascript" src="libInv.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/jquery.terminal/css/jquery.terminal.min.css"/>
 <style>
 	#invoices {border: 1px solid #333333;}
@@ -14,7 +15,6 @@
 </style>
 </head>
 <body>
-<script src="inv_functions.js"></script>
 <script>
 
 	
@@ -69,7 +69,7 @@ $('body').terminal({
 					return;
 				}
 				var lessThanValue = val.slice(1,val.length);
-				if (isNumeric(lessThanValue) == true) { 
+				if (libInv.utils.isNumeric(lessThanValue) == true) { 
 					ranges[0] = lessThanValue;
 				} else {
 					_errors.push($('<span>'+_error_dictionary[0]+'</span>'+_common_text[1]+escapeHtml(val)+'</span>'));
@@ -82,7 +82,7 @@ $('body').terminal({
 					return;
 				}
 				var greaterThanValue = val.slice(1,val.length);
-				if (isNumeric(greaterThanValue) == true) { 
+				if (libInv.utils.isNumeric(greaterThanValue) == true) { 
 					ranges[1] = greaterThanValue;
 				} else {
 					_errors.push($('<span>'+_error_dictionary[1]+'</span>'+_common_text[1]+escapeHtml(val)+'</span>'));
