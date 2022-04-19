@@ -7,7 +7,7 @@
 <script type="text/javascript" src="libCommon.js" charset="utf-8"></script>
 <script type="text/javascript" src="libInv.js" charset="utf-8"></script>
 <link rel="stylesheet" href="https://unpkg.com/jquery.terminal/css/jquery.terminal.min.css"/>
-<link rel="icon" type="image/x-icon" href="./fulcrum.ico">
+<link rel="icon" type="image/x-icon" href="./fulcrum2.ico">
 <style>
 	#invoices {border: 1px solid #333333;}
 	#invoices td {padding-left: 5px; padding-right: 5px; text-align: left; border: 1px solid #333333;}
@@ -54,13 +54,22 @@ $('body').terminal({
 		_errors.length = 0; 
 	}
 }, 
-{checkArity:false, greetings:'FULCRUM Field-Ticketing System\n'}
+{
+	checkArity:false, 
+	prompt:'>', 
+	greetings: null,
+	onInit: function(term) {
+        greetings(term);
+    }
+}
 	//checkArity:false 
 		//This directs JQuery Terminal to allow a different number of arguments than what the handler function expects.
 		//The purpose of this is to enable function overloading, enabling commands to be used naked or with multiple parameters.
 		//Commands must use "rest" parameter syntax. (eg. blah: function(...args) { })
 	//greetings:<text>
 		//This is the greeting that shows when JQuery Terminal starts up.
+	//onInit: function
+		//This is a function hook for the initialization state. (aka: do something on start-up)
 );
 </script>
 </body>

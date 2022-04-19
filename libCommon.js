@@ -24,3 +24,7 @@ function escapeHtml(unsafe)
 		 .replace(/'/g, "&#039;");
 }
 
+function greetings(term) {
+	const greeting = $('<img src="./fulcrum2.bmp"><span>FULCRUM Field-Ticketing System</span>');
+	term.echo(greeting);
+}
