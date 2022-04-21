@@ -134,3 +134,8 @@ These key items may not contain a space, *, ?, or @ character:
 	Job ID
 	
 Commands may not include a " or ' character.
+
+==============================================
+Feature Wishlist
+-----------------
+Custom fields
