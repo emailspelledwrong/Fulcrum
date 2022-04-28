@@ -25,6 +25,6 @@ function escapeHtml(unsafe)
 }
 
 function greetings(term) {
-	const greeting = $('<img src="./fulcrum2.bmp"><span>FULCRUM Field-Ticketing System</span>');
+	const greeting = $('<img src="./fulcrum3_banner.bmp"><span>FULCRUM Field-Ticketing System</span>');
 	term.echo(greeting);
 }
